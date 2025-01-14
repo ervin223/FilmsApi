@@ -35,7 +35,7 @@ app.post('/movies', (req, res) => {
     movies.push(newMovie);
 
     res.status(201)
-        .location(`/movies/${newMovie.id}`) // Устанавливаем заголовок Location
+        .location(`/movies/${newMovie.id}`) 
         .send(newMovie);
 });
 
@@ -61,3 +61,4 @@ app.post('/movies', (req, res) => {
     movies.push(newMovie);
     res.status(201).send(newMovie);
 });
+
