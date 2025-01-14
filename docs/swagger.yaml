@@ -2,52 +2,96 @@ openapi: 3.0.2
 info:
   title: Films API
   version: 1.0.0
-  description: This is a Swagger UI for our Movies API
+  description: API for managing movies.
 paths:
-  /movies/{id}:
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-        description: PATH PARAMETER
+  /movies:
     get:
-      summary: Get details of a specific movie.
-      description: Returns the details of a movie by its ID.
+      summary: Get all movies
+      description: Retrieve a list of all movies.
       tags:
         - movies
       responses:
         '200':
-          description: Full details of the movie.
+          description: A list of movies.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  price:
-                    type: number
-                    format: float
-              examples:
-                MovieDetails:
-                  value:
-                    id: 1
-                    name: "The Matrix"
-                    price: 12.99
-        '404':
-          description: Movie was not found in movies array.
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: The unique identifier of the movie.
+                    name:
+                      type: string
+                      description: The name of the movie.
+                    price:
+                      type: number
+                      format: float
+                      description: The price of the movie.
+              example:
+                - id: 1
+                  name: "The Matrix"
+                  price: 12.99
+                - id: 2
+                  name: "Inception"
+                  price: 15.49
+    post:
+      summary: Add a new movie
+      description: Allows adding a new movie with multiple input structures.
+      tags:
+        - movies
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - type: object
+                  properties:
+                    name:
+                      type: string
+                      description: The name of the movie.
+                    price:
+                      type: number
+                      format: float
+                      description: The price of the movie.
+                  required:
+                    - name
+                    - price
+                - type: object
+                  properties:
+                    title:
+                      type: string
+                      description: An alternate title for the movie.
+                    cost:
+                      type: number
+                      description: The alternate cost of the movie.
+                  required:
+                    - title
+                    - cost
+            examples:
+              AddMovieExample:
+                value:
+                  name: "New Movie"
+                  price: 14.99
+              AddAlternateMovieExample:
+                value:
+                  title: "Alternate Movie"
+                  cost: 19.99
+      responses:
+        '201':
+          description: Movie successfully created.
           content:
             application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-              examples:
-                MovieNotFound:
-                  value:
-                    error: "Movie was not found in movies array."
+              example:
+                id: 10
+                name: "New Movie"
+                price: 14.99
+        '400':
+          description: Invalid input data.
+          content:
+            application/json:
+              example:
+                error: "Invalid request structure."
