@@ -1,38 +1,133 @@
 {
-    "openapi": "3.0.2",
-    "info": {
+  "openapi": "3.0.2",
+  "info": {
       "title": "FilmsApi",
       "version": "1.0.0",
       "description": "This is a Swagger UI for our Movies API"
-    },
-    "paths": {
+  },
+  "paths": {
       "/movies": {
-        "get": {
-          "tags": [
-            "movies"
-          ],
-          "summary": "Get a list of all movies",
-          "description": "Returns a list of all movies in the API.",
-          "responses": {
-            "200": {
-              "description": "Return list of movies",
-              "content": {
-                "application/json": {
-                  "examples": {
-                    "Movies": {
-                      "value": [
-                        "The Matrix",
-                        "Inception",
-                        "Interstellar"
-                      ]
-                    }
+          "get": {
+              "tags": [
+                  "movies"
+              ],
+              "summary": "Get a list of all movies",
+              "description": "Returns a list of all movies in the API.",
+              "responses": {
+                  "200": {
+                      "description": "Return list of movies",
+                      "content": {
+                          "application/json": {
+                              "examples": { 
+                                  "Movies": {
+                                      "value": [
+                                          "The Matrix",
+                                          "Inception",
+                                          "Interstellar"
+                                      ]
+                                  }
+                              }
+                          }
+                      }
                   }
-                }
               }
-            }
+          },
+          "put": {
+              "tags": [
+                  "movies"
+              ],
+              "summary": "Update movie details",
+              "description": "Updates the details of an existing movie in the API.",
+              "requestBody": {
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "type": "object",
+                              "properties": {
+                                  "id": {
+                                      "type": "integer"
+                                  },
+                                  "title": {
+                                      "type": "string"
+                                  }
+                              },
+                              "required": ["id", "title"]
+                          },
+                          "examples": {
+                              "UpdateMovie": {
+                                  "value": {
+                                      "id": 1,
+                                      "title": "Updated Movie Title"
+                                  }
+                              }
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "200": {
+                      "description": "Movie details updated successfully",
+                      "content": {
+                          "application/json": {
+                              "example": {
+                                  "id": 1,
+                                  "title": "Updated Movie Title"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "Movie not found"
+                  }
+              }
+          },
+          "delete": {
+              "tags": [
+                  "movies"
+              ],
+              "summary": "Delete a movie",
+              "description": "Deletes a movie from the API by ID.",
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "query",
+                      "required": true,
+                      "description": "ID of the movie to delete",
+                      "schema": {
+                          "type": "integer"
+                      }
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Movie deleted successfully"
+                  },
+                  "404": {
+                      "description": "Movie not found"
+                  }
+              }
           }
-        }
+      },
+      "/movies/error-example": {
+          "get": {
+              "tags": [
+                  "movies"
+              ],
+              "summary": "Error example endpoint",
+              "description": "Demonstrates how errors are handled in the API.",
+              "responses": {
+                  "400": {
+                      "description": "Bad Request",
+                      "content": {
+                          "application/json": {
+                              "example": {
+                                  "error": "Invalid input"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
       }
-    }
   }
-  
+}

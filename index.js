@@ -13,6 +13,15 @@ const movies = [
     { id: 3, title: 'Forrest Gump', genre: 'Drama', year: 1994 }
 ];
 
+app.get('/games', (req, res) => {
+    const games = [
+        { id: 1, title: 'Witcher 3', genre: 'RPG', year: 2015 },
+        { id: 2, title: 'Cyberpunk 2077', genre: 'RPG', year: 2020 },
+        { id: 3, title: 'The Elder Scrolls V: Skyrim', genre: 'RPG', year: 2011 }
+    ];
+    res.send(games);
+});
+
 app.get('/movies', (req, res) => {
     res.json(movies);
 });
