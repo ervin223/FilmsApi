@@ -39,6 +39,19 @@ app.post('/movies', (req, res) => {
         .send(newMovie);
 });
 
+app.delete('/movies/:id', (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    const movieIndex = movies.findIndex(m => m.id === id);
+
+    if (movieIndex === -1) {
+        return res.status(404).send({ error: "Movie not found" });
+    }
+
+    movies.splice(movieIndex, 1);
+
+    res.status(204).send();
+});
+
 const PORT = 8080;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
