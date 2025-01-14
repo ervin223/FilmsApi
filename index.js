@@ -2,30 +2,36 @@ const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./docs/swagger.json');
 
+const express = require('express');
 const app = express();
-const port = 8080;
-
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 const movies = [
-    { id: 1, title: 'Inception', genre: 'Sci-Fi', year: 2010 },
-    { id: 2, title: 'The Dark Knight', genre: 'Action', year: 2008 },
-    { id: 3, title: 'Forrest Gump', genre: 'Drama', year: 1994 }
+    { id: 0, name: "The Matrix", price: 12.99 },
+    { id: 1, name: "Inception", price: 15.49 },
+    { id: 2, name: "Interstellar", price: 18.00 },
+    { id: 3, name: "The Dark Knight", price: 14.50 },
+    { id: 4, name: "Pulp Fiction", price: 10.00 },
+    { id: 5, name: "The Godfather", price: 16.99 },
+    { id: 6, name: "Forrest Gump", price: 11.50 },
+    { id: 7, name: "Gladiator", price: 13.00 }
 ];
 
-app.get('/games', (req, res) => {
-    const games = [
-        { id: 1, title: 'Witcher 3', genre: 'RPG', year: 2015 },
-        { id: 2, title: 'Cyberpunk 2077', genre: 'RPG', year: 2020 },
-        { id: 3, title: 'The Elder Scrolls V: Skyrim', genre: 'RPG', year: 2011 }
-    ];
-    res.send(games);
-});
-
 app.get('/movies', (req, res) => {
-    res.json(movies);
+    res.send(movies);
 });
 
-app.listen(port, () => {
-    console.log(`API работает на http://localhost:${port}`);
+app.get('/movies/:id', (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    const movie = movies.find(m => m.id === id);
+
+    if (movie) {
+        res.send(movie);
+    } else {
+        res.status(404).send({ error: "Movie not found" });
+    }
+});
+
+const PORT = 8080;
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
 });
