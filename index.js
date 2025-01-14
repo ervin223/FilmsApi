@@ -19,15 +19,24 @@ app.get('/movies', (req, res) => {
     res.send(movies);
 });
 
-app.get('/movies/:id', (req, res) => {
-    const id = parseInt(req.params.id, 10);
-    const movie = movies.find(m => m.id === id);
+app.post('/movies', (req, res) => {
+    const { name, price } = req.body;
 
-    if (!movie) {
-        return res.status(404).send({ error: "Movie not found" });
+    if (!name || price === undefined) {
+        return res.status(400).send({ error: "Name and price are required." });
     }
 
-    res.send(movie);
+    const newMovie = {
+        id: movies.length + 1,
+        name,
+        price: parseFloat(price)
+    };
+
+    movies.push(newMovie);
+
+    res.status(201)
+        .location(`/movies/${newMovie.id}`) // Устанавливаем заголовок Location
+        .send(newMovie);
 });
 
 const PORT = 8080;
