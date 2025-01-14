@@ -1,60 +1,53 @@
-{
-    "summary": "id",
-    "description": "Path parameter",
-    "get": {
-        "tags": [
-            "movies"
-        ],
-        "responses": {
-            "200": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "examples": {
-                            "id": {
-                                "value": {
-                                    "id": 1,
-                                    "name": "The Matrix",
-                                    "price": 12.99
-                                }
-                            }
-                        }
-                    }
-                },
-                "description": "Full details of the movie."
-            },
-            "404": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "examples": {
-                            "id": {
-                                "value": {
-                                    "error": "Error message."
-                                }
-                            }
-                        }
-                    }
-                },
-                "description": "Movie was not found in movies array."
-            }
-        },
-        "summary": "Get details of a specific movie.",
-        "description": "Returns the details of a movie by its ID."
-    },
-    "parameters": [
-        {
-            "name": "id",
-            "description": "PATH PARAMETER",
-            "schema": {
-                "type": "integer"
-            },
-            "in": "path",
-            "required": true
-        }
-    ]
-}
+openapi: 3.0.2
+info:
+  title: Films API
+  version: 1.0.0
+  description: This is a Swagger UI for our Movies API
+paths:
+  /movies/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: PATH PARAMETER
+    get:
+      summary: Get details of a specific movie.
+      description: Returns the details of a movie by its ID.
+      tags:
+        - movies
+      responses:
+        '200':
+          description: Full details of the movie.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  price:
+                    type: number
+                    format: float
+              examples:
+                MovieDetails:
+                  value:
+                    id: 1
+                    name: "The Matrix"
+                    price: 12.99
+        '404':
+          description: Movie was not found in movies array.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              examples:
+                MovieNotFound:
+                  value:
+                    error: "Movie was not found in movies array."
