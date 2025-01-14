@@ -35,3 +35,20 @@ app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
     console.log(`Swagger docs available at http://localhost:${PORT}/docs`);
 });
+
+app.post('/movies', (req, res) => {
+    const { name, price } = req.body;
+
+    if (!name || !price) {
+        return res.status(400).send({ error: "Name and price are required." });
+    }
+
+    const newMovie = {
+        id: movies.length + 1,
+        name,
+        price: parseFloat(price)
+    };
+
+    movies.push(newMovie);
+    res.status(201).send(newMovie);
+});
