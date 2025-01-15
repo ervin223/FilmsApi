@@ -1,22 +1,29 @@
 const express = require('express');
-const yaml = require('yamljs');
-const swaggerUi = require('swagger-ui-express');
-
+const path = require('path');
 const app = express();
 
-const swaggerDocument = yaml.load('./docs/swagger.yaml');
-
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use(express.json());
 
 const movies = [
     { id: 1, name: "The Matrix", price: 12.99 },
-    { id: 2, name: "Inception", price: 15.49 },
-    { id: 3, name: "Interstellar", price: 18.00 },
-    { id: 4, name: "The Dark Knight", price: 14.50 }
+    { id: 2, name: "Inception", price: 15.49 }
 ];
 
+const getBaseUrl = (req) => `${req.protocol}://${req.get('host')}`;
+
 app.get('/movies', (req, res) => {
-    res.send(movies);
+    res.status(200).send(movies);
+});
+
+app.get('/movies/:id', (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    const movie = movies.find(m => m.id === id);
+
+    if (!movie) {
+        return res.status(404).send({ error: "Movie not found" });
+    }
+
+    res.status(200).send(movie);
 });
 
 app.post('/movies', (req, res) => {
@@ -34,9 +41,11 @@ app.post('/movies', (req, res) => {
 
     movies.push(newMovie);
 
+    const locationUrl = `${getBaseUrl(req)}/movies/${newMovie.id}`;
+
     res.status(201)
-        .location(`/movies/${newMovie.id}`) 
-        .send(newMovie);
+        .location(locationUrl) 
+        .send(newMovie); 
 });
 
 app.delete('/movies/:id', (req, res) => {
@@ -52,26 +61,12 @@ app.delete('/movies/:id', (req, res) => {
     res.status(204).send();
 });
 
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Запуск сервера
 const PORT = 8080;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
-    console.log(`Swagger docs available at http://localhost:${PORT}/docs`);
 });
-
-app.post('/movies', (req, res) => {
-    const { name, price } = req.body;
-
-    if (!name || !price) {
-        return res.status(400).send({ error: "Name and price are required." });
-    }
-
-    const newMovie = {
-        id: movies.length + 1,
-        name,
-        price: parseFloat(price)
-    };
-
-    movies.push(newMovie);
-    res.status(201).send(newMovie);
-});
-
