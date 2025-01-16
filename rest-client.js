@@ -20,7 +20,6 @@ Vue.createApp({
                 const data = await response.json();
                 this.filmInModal = data;
 
-                // Показать модальное окно
                 const modal = new bootstrap.Modal(document.getElementById('filmInfoModal'));
                 modal.show();
             } catch (error) {
