@@ -1,15 +1,13 @@
 openapi: 3.0.2
 info:
-  title: Films API
+  title: Films and Actors API
   version: 1.0.0
-  description: API for managing movies.
+  description: API for managing films, actors, and their relationships.
 paths:
   /movies:
     get:
       summary: Get all movies
-      description: Retrieve a list of all movies.
-      tags:
-        - movies
+      description: Returns a list of all movies.
       responses:
         '200':
           description: A list of movies.
@@ -22,29 +20,16 @@ paths:
                   properties:
                     id:
                       type: integer
-                      description: The unique identifier of the movie.
                     name:
                       type: string
-                      description: The name of the movie.
                     price:
                       type: number
                       format: float
-                      description: The price of the movie.
-              example:
-                - id: 1
-                  name: "The Matrix"
-                  price: 12.99
-                - id: 2
-                  name: "Inception"
-                  price: 15.49
     post:
       summary: Add a new movie
-      description: Creates a new movie with the provided name and price.
-      tags:
-        - new-movie
+      description: Creates a new movie.
       requestBody:
         required: true
-        description: A new movie to be created.
         content:
           application/json:
             schema:
@@ -52,66 +37,28 @@ paths:
               properties:
                 name:
                   type: string
-                  description: The name of the movie.
                 price:
                   type: number
                   format: float
-                  description: The price of the movie.
               required:
                 - name
                 - price
-            example:
-              name: "Tetris"
-              price: 0.99
       responses:
         '201':
           description: Movie successfully created.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    description: The unique identifier of the created movie.
-                  name:
-                    type: string
-                    description: The name of the movie.
-                  price:
-                    type: number
-                    format: float
-                    description: The price of the movie.
-              example:
-                id: 3
-                name: "Tetris"
-                price: 0.99
-        '400':
-          description: One or all parameters are missing.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-              example:
-                error: "Name and price are required."
   /movies/{id}:
     get:
-      summary: Get a movie by ID
-      description: Retrieve the details of a movie by its unique ID.
-      tags:
-        - movies
+      summary: Get movie by ID
+      description: Returns the details of a specific movie.
       parameters:
         - name: id
           in: path
           required: true
-          description: The unique identifier of the movie.
           schema:
             type: integer
       responses:
         '200':
-          description: Details of the requested movie.
+          description: Movie details.
           content:
             application/json:
               schema:
@@ -124,44 +71,142 @@ paths:
                   price:
                     type: number
                     format: float
-              example:
-                id: 1
-                name: "The Matrix"
-                price: 12.99
         '404':
           description: Movie not found.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-              example:
-                error: "Movie not found."
-    delete:
-      summary: Delete a movie by ID
-      description: Deletes a movie by its unique ID.
-      tags:
-        - delete-movie
+    put:
+      summary: Update a movie
+      description: Updates the details of a specific movie.
       parameters:
         - name: id
           in: path
           required: true
-          description: The unique identifier of the movie to delete.
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                price:
+                  type: number
+                  format: float
+      responses:
+        '200':
+          description: Movie updated.
+    delete:
+      summary: Delete a movie
+      description: Deletes a specific movie.
+      parameters:
+        - name: id
+          in: path
+          required: true
           schema:
             type: integer
       responses:
         '204':
-          description: Movie successfully deleted.
+          description: Movie deleted.
         '404':
           description: Movie not found.
+  /actors:
+    get:
+      summary: Get all actors
+      description: Returns a list of all actors.
+      responses:
+        '200':
+          description: A list of actors.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-              example:
-                error: "Movie not found."
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+    post:
+      summary: Add a new actor
+      description: Creates a new actor.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+                - name
+      responses:
+        '201':
+          description: Actor successfully created.
+  /movies/{id}/actors:
+    get:
+      summary: Get actors for a movie
+      description: Returns a list of actors for a specific movie.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of actors for the movie.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+    post:
+      summary: Add an actor to a movie
+      description: Links an actor to a specific movie.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                actorId:
+                  type: integer
+              required:
+                - actorId
+      responses:
+        '201':
+          description: Actor linked to the movie.
+    delete:
+      summary: Remove an actor from a movie
+      description: Removes the link between an actor and a specific movie.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: actorId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Actor unlinked from the movie.

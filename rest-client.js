@@ -1,11 +1,13 @@
 Vue.createApp({
     data() {
         return {
-            films: [],
+            films: [], 
+            selectedFilm: {}, 
+            selectedFilmActors: [] 
         };
     },
     created() {
-        this.fetchMovies();
+        this.fetchMovies(); 
     },
     methods: {
         fetchMovies() {
@@ -16,13 +18,29 @@ Vue.createApp({
                 })
                 .catch(error => console.error('Error fetching movies:', error));
         },
-        getFilmActors(id) {
-            fetch(`http://localhost:8080/movies/${id}/actors`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Actors:', data);
-                })
-                .catch(error => console.error('Error fetching actors:', error));
+        async getFilmDetails(id) {
+            try {
+                const response = await fetch(`http://localhost:8080/movies/${id}`);
+                const data = await response.json();
+                this.selectedFilm = data;
+
+                const modal = new bootstrap.Modal(document.getElementById('filmDetailsModal'));
+                modal.show();
+            } catch (error) {
+                console.error('Error fetching film details:', error);
+            }
+        },
+        async getFilmActors(id) {
+            try {
+                const response = await fetch(`http://localhost:8080/movies/${id}/actors`);
+                const data = await response.json();
+                this.selectedFilmActors = data;
+
+                const modal = new bootstrap.Modal(document.getElementById('filmActorsModal'));
+                modal.show();
+            } catch (error) {
+                console.error('Error fetching film actors:', error);
+            }
         }
     }
 }).mount('#app');
