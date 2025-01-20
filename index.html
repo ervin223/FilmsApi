@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Films and Actors</title>
+    <title>Films Management</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
     <div id="app" class="container mt-5">
-        <h1>Films and Actors</h1>
-        <table class="table table-striped">
+        <h1 class="mb-4 text-center">Films Management</h1>
+
+        <button class="btn btn-primary mb-3" @click="showAddFilmModal">Add New Film</button>
+
+        <table class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>Title</th>
@@ -20,36 +23,35 @@
             <tbody>
                 <tr v-for="film in films" :key="film.id">
                     <td @click="getFilmDetails(film.id)" class="text-primary" style="cursor: pointer;">{{ film.name }}</td>
-                    <td>{{ film.price }}</td>
+                    <td>{{ film.price ? film.price.toFixed(2) : 'N/A' }} $</td>
                     <td>
-                        <button class="btn btn-info btn-sm" @click="getFilmActors(film.id)">View Actors</button>
+                        <button class="btn btn-info btn-sm" @click="getFilmActors(film.id)">Actors</button>
+                        <button class="btn btn-warning btn-sm" @click="showEditFilmModal(film)">Edit</button>
+                        <button class="btn btn-danger btn-sm" @click="deleteFilm(film.id)">Delete</button>
                     </td>
                 </tr>
             </tbody>
         </table>
 
-        <div class="modal fade" id="filmDetailsModal" tabindex="-1" aria-labelledby="filmDetailsModalLabel" aria-hidden="true">
+        <div class="modal fade" id="filmModal" tabindex="-1" aria-labelledby="filmModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Film Details</h5>
+                        <h5 class="modal-title">{{ isEditing ? 'Edit Film' : 'Add New Film' }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <table class="table table-striped">
-                            <tr>
-                                <th>ID</th>
-                                <td>{{ selectedFilm.id }}</td>
-                            </tr>
-                            <tr>
-                                <th>Name</th>
-                                <td>{{ selectedFilm.name }}</td>
-                            </tr>
-                            <tr>
-                                <th>Price</th>
-                                <td>{{ selectedFilm.price }}</td>
-                            </tr>
-                        </table>
+                        <form @submit.prevent="saveFilm">
+                            <div class="mb-3">
+                                <label for="filmName" class="form-label">Film Name</label>
+                                <input type="text" class="form-control" id="filmName" v-model="filmForm.name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="filmPrice" class="form-label">Film Price</label>
+                                <input type="number" class="form-control" id="filmPrice" v-model="filmForm.price" required>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">{{ isEditing ? 'Save Changes' : 'Add Film' }}</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -72,9 +74,36 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="filmDetailsModal" tabindex="-1" aria-labelledby="filmDetailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Film Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                            <tr>
+                                <th>ID</th>
+                                <td>{{ selectedFilm.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Name</th>
+                                <td>{{ selectedFilm.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Price</th>
+                                <td>{{ selectedFilm.price ? selectedFilm.price.toFixed(2) : 'N/A' }} $</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.47/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.47/dist/vue.global.prod.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="rest-client.js"></script>
 </body>

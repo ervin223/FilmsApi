@@ -1,55 +1,49 @@
 openapi: 3.0.2
 info:
-  title: Films and Actors API
+  title: Films API
   version: 1.0.0
-  description: API for managing films, actors, and their relationships.
+  description: API для управления фильмами и актёрами
 paths:
   /movies:
     get:
       summary: Get all movies
-      description: Returns a list of all movies.
+      description: Возвращает список всех фильмов
+      tags:
+        - movies
       responses:
         '200':
-          description: A list of movies.
+          description: Список фильмов
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    name:
-                      type: string
-                    price:
-                      type: number
-                      format: float
+                  $ref: '#/components/schemas/Movie'
     post:
       summary: Add a new movie
-      description: Creates a new movie.
+      description: Создаёт новый фильм
+      tags:
+        - movies
       requestBody:
+        description: Данные нового фильма
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                price:
-                  type: number
-                  format: float
-              required:
-                - name
-                - price
+              $ref: '#/components/schemas/NewMovie'
       responses:
         '201':
-          description: Movie successfully created.
+          description: Фильм успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
   /movies/{id}:
     get:
       summary: Get movie by ID
-      description: Returns the details of a specific movie.
+      description: Возвращает информацию о фильме по ID
+      tags:
+        - movies
       parameters:
         - name: id
           in: path
@@ -58,24 +52,22 @@ paths:
             type: integer
       responses:
         '200':
-          description: Movie details.
+          description: Информация о фильме
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  price:
-                    type: number
-                    format: float
+                $ref: '#/components/schemas/Movie'
         '404':
-          description: Movie not found.
+          description: Фильм не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     put:
-      summary: Update a movie
-      description: Updates the details of a specific movie.
+      summary: Update a movie by ID
+      description: Обновляет данные фильма
+      tags:
+        - movies
       parameters:
         - name: id
           in: path
@@ -83,23 +75,30 @@ paths:
           schema:
             type: integer
       requestBody:
+        description: Новые данные фильма
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                price:
-                  type: number
-                  format: float
+              $ref: '#/components/schemas/NewMovie'
       responses:
         '200':
-          description: Movie updated.
+          description: Фильм успешно обновлён
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        '404':
+          description: Фильм не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     delete:
-      summary: Delete a movie
-      description: Deletes a specific movie.
+      summary: Delete a movie by ID
+      description: Удаляет фильм по ID
+      tags:
+        - movies
       parameters:
         - name: id
           in: path
@@ -108,48 +107,19 @@ paths:
             type: integer
       responses:
         '204':
-          description: Movie deleted.
+          description: Фильм успешно удалён
         '404':
-          description: Movie not found.
-  /actors:
-    get:
-      summary: Get all actors
-      description: Returns a list of all actors.
-      responses:
-        '200':
-          description: A list of actors.
+          description: Фильм не найден
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    name:
-                      type: string
-    post:
-      summary: Add a new actor
-      description: Creates a new actor.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-              required:
-                - name
-      responses:
-        '201':
-          description: Actor successfully created.
+                $ref: '#/components/schemas/Error'
   /movies/{id}/actors:
     get:
-      summary: Get actors for a movie
-      description: Returns a list of actors for a specific movie.
+      summary: Get actors of a movie
+      description: Возвращает список актёров фильма
+      tags:
+        - actors
       parameters:
         - name: id
           in: path
@@ -158,55 +128,51 @@ paths:
             type: integer
       responses:
         '200':
-          description: A list of actors for the movie.
+          description: Список актёров
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    name:
-                      type: string
-    post:
-      summary: Add an actor to a movie
-      description: Links an actor to a specific movie.
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                actorId:
-                  type: integer
-              required:
-                - actorId
-      responses:
-        '201':
-          description: Actor linked to the movie.
-    delete:
-      summary: Remove an actor from a movie
-      description: Removes the link between an actor and a specific movie.
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-        - name: actorId
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '204':
-          description: Actor unlinked from the movie.
+                  $ref: '#/components/schemas/Actor'
+        '404':
+          description: Фильм не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Movie:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+    NewMovie:
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+      required:
+        - name
+        - price
+    Actor:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
