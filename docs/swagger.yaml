@@ -2,7 +2,7 @@ openapi: 3.0.2
 info:
   title: Films API
   version: 1.0.0
-  description: API для управления фильмами и актёрами
+  description: API Films and actors database
 paths:
   /movies:
     get:

@@ -1,11 +1,25 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
+const swaggerUi = require('swagger-ui-express');
+const fs = require('fs');
+const yaml = require('js-yaml');
 
 const app = express();
 const port = 8080;
 
 app.use(cors());
 app.use(express.json());
+
+app.use(express.static(__dirname));
+
+const swaggerDocument = yaml.load(fs.readFileSync(path.join(__dirname, 'docs', 'swagger.yaml'), 'utf8'));
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 let movies = [
     { id: 1, name: 'Inception', price: 12.99 },
@@ -18,7 +32,6 @@ let actors = {
     2: [{ id: 3, name: 'Keanu Reeves' }, { id: 4, name: 'Carrie-Anne Moss' }],
     3: [{ id: 5, name: 'Matthew McConaughey' }, { id: 6, name: 'Anne Hathaway' }]
 };
-
 
 app.get('/movies', (req, res) => {
     res.json(movies);
@@ -73,7 +86,6 @@ app.delete('/movies/:id', (req, res) => {
     res.status(204).send();
 });
 
-
 app.get('/movies/:id/actors', (req, res) => {
     const id = parseInt(req.params.id);
     const movieActors = actors[id];
@@ -85,4 +97,5 @@ app.get('/movies/:id/actors', (req, res) => {
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
+    console.log(`Swagger docs available at http://localhost:${port}/docs`);
 });
