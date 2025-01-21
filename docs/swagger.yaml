@@ -7,12 +7,12 @@ paths:
   /movies:
     get:
       summary: Get all movies
-      description: Возвращает список всех фильмов
+      description: Tagastab filmid
       tags:
         - movies
       responses:
         '200':
-          description: Список фильмов
+          description: Films list
           content:
             application/json:
               schema:
@@ -21,11 +21,11 @@ paths:
                   $ref: '#/components/schemas/Movie'
     post:
       summary: Add a new movie
-      description: Создаёт новый фильм
+      description: Create new film
       tags:
         - movies
       requestBody:
-        description: Данные нового фильма
+        description: Films data
         required: true
         content:
           application/json:
@@ -33,7 +33,7 @@ paths:
               $ref: '#/components/schemas/NewMovie'
       responses:
         '201':
-          description: Фильм успешно создан
+          description: Film succesfully created
           content:
             application/json:
               schema:
@@ -41,7 +41,7 @@ paths:
   /movies/{id}:
     get:
       summary: Get movie by ID
-      description: Возвращает информацию о фильме по ID
+      description: Tgastab film by id
       tags:
         - movies
       parameters:
@@ -52,20 +52,20 @@ paths:
             type: integer
       responses:
         '200':
-          description: Информация о фильме
+          description: Film information
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Movie'
         '404':
-          description: Фильм не найден
+          description: Film puudub
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
     put:
       summary: Update a movie by ID
-      description: Обновляет данные фильма
+      description: Update film
       tags:
         - movies
       parameters:
@@ -75,7 +75,7 @@ paths:
           schema:
             type: integer
       requestBody:
-        description: Новые данные фильма
+        description: New data
         required: true
         content:
           application/json:
@@ -83,20 +83,20 @@ paths:
               $ref: '#/components/schemas/NewMovie'
       responses:
         '200':
-          description: Фильм успешно обновлён
+          description: Film succesfully updated
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Movie'
         '404':
-          description: Фильм не найден
+          description: Film puudub
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
     delete:
       summary: Delete a movie by ID
-      description: Удаляет фильм по ID
+      description: Delete film
       tags:
         - movies
       parameters:
@@ -107,9 +107,9 @@ paths:
             type: integer
       responses:
         '204':
-          description: Фильм успешно удалён
+          description: Film succesfully deleted
         '404':
-          description: Фильм не найден
+          description: Film puudub
           content:
             application/json:
               schema:
@@ -117,7 +117,7 @@ paths:
   /movies/{id}/actors:
     get:
       summary: Get actors of a movie
-      description: Возвращает список актёров фильма
+      description: Tagastab filmid by id
       tags:
         - actors
       parameters:
@@ -128,7 +128,7 @@ paths:
             type: integer
       responses:
         '200':
-          description: Список актёров
+          description: Actors list
           content:
             application/json:
               schema:
@@ -136,7 +136,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Actor'
         '404':
-          description: Фильм не найден
+          description: Film puudub
           content:
             application/json:
               schema:
