@@ -176,3 +176,54 @@ components:
       properties:
         error:
           type: string
+      /movies/{id}/actors:
+    post:
+      summary: Add an actor to a movie
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '201':
+          description: Actor added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+        '404':
+          description: Movie not found
+    delete:
+      summary: Delete an actor from a movie
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: actorId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Actor deleted
+        '404':
+          description: Movie or actor not found
+

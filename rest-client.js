@@ -1,15 +1,17 @@
 Vue.createApp({
     data() {
         return {
-            films: [], 
-            selectedFilm: {}, 
-            selectedFilmActors: [], 
-            filmForm: { id: null, name: '', price: 0 }, 
-            isEditing: false 
+            films: [],
+            selectedFilm: {},
+            selectedFilmActors: [],
+            currentActors: [],
+            currentMovieId: null,
+            filmForm: { id: null, name: '', price: 0 },
+            isEditing: false
         };
     },
     created() {
-        this.fetchMovies(); 
+        this.fetchMovies();
     },
     methods: {
         fetchMovies() {
@@ -90,6 +92,59 @@ Vue.createApp({
                     if (modal) modal.show();
                 })
                 .catch(error => console.error('Error fetching film details:', error));
+        },
+        async viewActors(movieId) {
+            try {
+                const response = await fetch(`/movies/${movieId}/actors`);
+                const actors = await response.json();
+                this.currentActors = actors;
+                this.showActorsModal();
+            } catch (error) {
+                console.error('Error fetching actors:', error);
+            }
+        },
+        async addActor(movieId, actorName) {
+            try {
+                const response = await fetch(`/movies/${movieId}/actors`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: actorName })
+                });
+
+                if (response.ok) {
+                    this.viewActors(movieId);
+                } else {
+                    console.error('Failed to add actor:', await response.json());
+                }
+            } catch (error) {
+                console.error('Error adding actor:', error);
+            }
+        },
+        async deleteActor(movieId, actorId) {
+            try {
+                const response = await fetch(`/movies/${movieId}/actors/${actorId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    this.viewActors(movieId);
+                } else {
+                    console.error('Failed to delete actor:', await response.json());
+                }
+            } catch (error) {
+                console.error('Error deleting actor:', error);
+            }
+        },
+        showActorsModal() {
+            const modalElement = document.getElementById('actorsModal');
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        },
+        showAddActorModal(movieId) {
+            this.currentMovieId = movieId;
+            const modalElement = document.getElementById('addActorModal');
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
         }
     }
 }).mount('#app');
