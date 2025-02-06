@@ -44,7 +44,12 @@
                 >
                   Edit
                 </button>
-
+                <button
+                  class="btn btn-danger btn-sm"
+                  @click="deleteFilm(film.id)"
+                >
+                  Delete
+                </button>
               </div>
             </td>
           </tr>
@@ -202,7 +207,14 @@
         return modal
       },
   
-    
+      async fetchMovies() {
+        try {
+          const res = await axios.get('http://localhost:8080/movies')
+          this.films = res.data
+        } catch (err) {
+          console.error('Error fetching films:', err)
+        }
+      },
       showAddFilmModal() {
         this.filmForm = { id: null, name: '', price: 0 }
         this.isEditing = false
@@ -215,7 +227,28 @@
         const modal = this.getOrCreateModal('filmModal')
         modal && modal.show()
       },
-      
+      async saveFilm() {
+        const method = this.isEditing ? 'put' : 'post'
+        const url = this.isEditing
+          ? `http://localhost:8080/movies/${this.filmForm.id}`
+          : 'http://localhost:8080/movies'
+        try {
+          await axios({ method, url, data: this.filmForm })
+          this.fetchMovies()
+          const modal = this.getOrCreateModal('filmModal')
+          modal && modal.hide()
+        } catch (err) {
+          console.error('Error saving film:', err)
+        }
+      },
+      async deleteFilm(id) {
+        try {
+          await axios.delete(`http://localhost:8080/movies/${id}`)
+          this.fetchMovies()
+        } catch (err) {
+          console.error('Error deleting film:', err)
+        }
+      },
       async getFilmActors(filmId) {
         try {
           const res = await axios.get(`http://localhost:8080/movies/${filmId}/actors`)
