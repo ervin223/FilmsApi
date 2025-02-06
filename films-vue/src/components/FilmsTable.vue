@@ -108,12 +108,7 @@
                   :key="actor.id"
                 >
                   {{ actor.name }}
-                  <button
-                    class="btn btn-danger btn-sm"
-                    @click="deleteActor(currentMovieId, actor.id)"
-                  >
-                    x
-                  </button>
+
                 </li>
               </ul>
             </div>
@@ -272,14 +267,7 @@
           console.error('Error adding actor:', err)
         }
       },
-      async deleteActor(movieId, actorId) {
-        try {
-          await axios.delete(`http://localhost:8080/movies/${movieId}/actors/${actorId}`)
-          this.getFilmActors(movieId)
-        } catch (err) {
-          console.error('Error deleting actor:', err)
-        }
-      },
+
       async getFilmDetails(id) {
         try {
           const res = await axios.get(`http://localhost:8080/movies/${id}`)
