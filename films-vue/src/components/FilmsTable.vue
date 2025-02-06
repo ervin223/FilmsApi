@@ -2,10 +2,6 @@
     <div class="container mt-3">
       <h2 class="text-center mb-4">Films Management</h2>
   
-      <button class="btn btn-primary mb-3" @click="showAddFilmModal">
-        Add New Film
-      </button>
-  
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
@@ -196,31 +192,7 @@
       this.fetchMovies()
     },
     methods: {
-      getOrCreateModal(id) {
-        const el = document.getElementById(id)
-        if (!el) return null
-  
-        let modal = Modal.getInstance(el)
-        if (!modal) {
-          modal = new Modal(el, { backdrop: 'static' })
-        }
-        return modal
-      },
-  
-      async fetchMovies() {
-        try {
-          const res = await axios.get('http://localhost:8080/movies')
-          this.films = res.data
-        } catch (err) {
-          console.error('Error fetching films:', err)
-        }
-      },
-      showAddFilmModal() {
-        this.filmForm = { id: null, name: '', price: 0 }
-        this.isEditing = false
-        const modal = this.getOrCreateModal('filmModal')
-        modal && modal.show()
-      },
+
       showEditFilmModal(film) {
         this.filmForm = { ...film }
         this.isEditing = true
