@@ -49,7 +49,20 @@ app.get('/movies/:id', (req, res) => {
     }
 });
 
-
+//add new films
+app.post('/movies', (req, res) => {
+    const { name, price } = req.body;
+    if (!name || !price) {
+        return res.status(400).json({ error: 'Name and price are required' });
+    }
+    const newMovie = {
+        id: movies.length ? movies[movies.length - 1].id + 1 : 1,
+        name,
+        price
+    };
+    movies.push(newMovie);
+    res.status(201).json(newMovie);
+});
 
 app.put('/movies/:id', (req, res) => {
     const id = parseInt(req.params.id);
