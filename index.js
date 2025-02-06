@@ -64,20 +64,7 @@ app.post('/movies', (req, res) => {
     res.status(201).json(newMovie);
 });
 
-app.put('/movies/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    const { name, price } = req.body;
-    const movie = movies.find(m => m.id === id);
-    if (!movie) {
-        return res.status(404).json({ error: 'Movie not found' });
-    }
-    if (!name || !price) {
-        return res.status(400).json({ error: 'Name and price are required' });
-    }
-    movie.name = name;
-    movie.price = price;
-    res.json(movie);
-});
+
 
 app.delete('/movies/:id', (req, res) => {
     const id = parseInt(req.params.id);
