@@ -2,29 +2,7 @@
     <div class="container mt-3">
       <h2 class="text-center mb-4">Films Management</h2>
   
-      <button class="btn btn-primary mb-3" @click="showAddFilmModal">
-        Add New Film
-      </button>
-  
-      <table class="table table-bordered table-striped">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Price</th>
-            <th style="width: 25%">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="film in films" :key="film.id">
-            <td
-              @click="getFilmDetails(film.id)"
-              class="text-primary"
-              style="cursor: pointer;"
-            >
-              {{ film.name }}
-            </td>
-            <td>{{ film.price ? film.price.toFixed(2) : 'N/A' }} $</td>
-            <td>
+      
               <div class="btn-group">
                 <button
                   class="btn btn-info btn-sm"
@@ -146,30 +124,7 @@
         </div>
       </div>
   
-      <!-- Модальное окно: детали фильма -->
-      <div class="modal fade" id="filmDetailsModal" tabindex="-1">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Film Details</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-              <table class="table">
-                <tr>
-                  <th>ID</th>
-                  <td>{{ selectedFilm.id }}</td>
-                </tr>
-                <tr>
-                  <th>Name</th>
-                  <td>{{ selectedFilm.name }}</td>
-                </tr>
-                <tr>
-                  <th>Price</th>
-                  <td>{{ selectedFilm.price ? selectedFilm.price.toFixed(2) : 'N/A' }} $</td>
-                </tr>
-              </table>
-            </div>
+      
           </div>
         </div>
       </div>
@@ -196,26 +151,7 @@
     mounted() {
       this.fetchMovies()
     },
-    methods: {
-      getOrCreateModal(id) {
-        const el = document.getElementById(id)
-        if (!el) return null
-  
-        let modal = Modal.getInstance(el)
-        if (!modal) {
-          modal = new Modal(el, { backdrop: 'static' })
-        }
-        return modal
-      },
-  
-      async fetchMovies() {
-        try {
-          const res = await axios.get('http://localhost:8080/movies')
-          this.films = res.data
-        } catch (err) {
-          console.error('Error fetching films:', err)
-        }
-      },
+    
       showAddFilmModal() {
         this.filmForm = { id: null, name: '', price: 0 }
         this.isEditing = false
