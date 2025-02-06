@@ -44,7 +44,12 @@
                 >
                   Edit
                 </button>
-                
+                <button
+                  class="btn btn-danger btn-sm"
+                  @click="deleteFilm(film.id)"
+                >
+                  Delete
+                </button>
               </div>
             </td>
           </tr>
@@ -236,7 +241,14 @@
           console.error('Error saving film:', err)
         }
       },
-      
+      async deleteFilm(id) {
+        try {
+          await axios.delete(`http://localhost:8080/movies/${id}`)
+          this.fetchMovies()
+        } catch (err) {
+          console.error('Error deleting film:', err)
+        }
+      },
       async getFilmActors(filmId) {
         try {
           const res = await axios.get(`http://localhost:8080/movies/${filmId}/actors`)
