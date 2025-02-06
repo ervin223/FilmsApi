@@ -1,10 +1,7 @@
 <template>
     <div class="container mt-3">
       <h2 class="text-center mb-4">Films Management</h2>
-  
-      <button class="btn btn-primary mb-3" @click="showAddFilmModal">
-        Add New Film
-      </button>
+
   
       <table class="table table-bordered table-striped">
         <thead>
@@ -196,51 +193,13 @@
       this.fetchMovies()
     },
     methods: {
-      getOrCreateModal(id) {
-        const el = document.getElementById(id)
-        if (!el) return null
-  
-        let modal = Modal.getInstance(el)
-        if (!modal) {
-          modal = new Modal(el, { backdrop: 'static' })
-        }
-        return modal
-      },
-  
-      async fetchMovies() {
-        try {
-          const res = await axios.get('http://localhost:8080/movies')
-          this.films = res.data
-        } catch (err) {
-          console.error('Error fetching films:', err)
-        }
-      },
-      showAddFilmModal() {
-        this.filmForm = { id: null, name: '', price: 0 }
-        this.isEditing = false
-        const modal = this.getOrCreateModal('filmModal')
-        modal && modal.show()
-      },
       showEditFilmModal(film) {
         this.filmForm = { ...film }
         this.isEditing = true
         const modal = this.getOrCreateModal('filmModal')
         modal && modal.show()
       },
-      async saveFilm() {
-        const method = this.isEditing ? 'put' : 'post'
-        const url = this.isEditing
-          ? `http://localhost:8080/movies/${this.filmForm.id}`
-          : 'http://localhost:8080/movies'
-        try {
-          await axios({ method, url, data: this.filmForm })
-          this.fetchMovies()
-          const modal = this.getOrCreateModal('filmModal')
-          modal && modal.hide()
-        } catch (err) {
-          console.error('Error saving film:', err)
-        }
-      },
+      
       async deleteFilm(id) {
         try {
           await axios.delete(`http://localhost:8080/movies/${id}`)
