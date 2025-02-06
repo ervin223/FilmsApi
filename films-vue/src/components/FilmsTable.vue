@@ -272,7 +272,78 @@
           console.error('Error deleting film:', err)
         }
       },
-      
+      async getFilmActors(filmId) {
+        try {
+          const res = await axios.get(`http://localhost:8080/movies/${filmId}/actors`)
+          this.selectedFilmActors = res.data
+          this.currentMovieId = filmId
+          const modal = this.getOrCreateModal('filmActorsModal')
+          modal && modal.show()
+        } catch (err) {
+          console.error('Error fetching film actors:', err)
+        }
+      },
+      async addActor(movieId, actorName) {
+        if (!actorName) return
+        try {
+          await axios.post(`http://localhost:8080/movies/${movieId}/actors`, { name: actorName })
+          this.getFilmActors(movieId)
+          this.newActorName = ''
+          const modal = this.getOrCreateModal('addActorModal')
+          modal && modal.hide()
+        } catch (err) {
+          console.error('Error adding actor:', err)
+        }
+      },
+      async deleteActor(movieId, actorId) {
+        try {
+          await axios.delete(`http://localhost:8080/movies/${movieId}/actors/${actorId}`)
+          this.getFilmActors(movieId)
+        } catch (err) {
+          console.error('Error deleting actor:', err)
+        }
+      },
+
+      async updateActor(movieId, actorId, newName) {
+        try {
+            const response = await fetch(`http://localhost:8080/movies/${movieId}/actors/${actorId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: newName })
+            });
+
+            if (response.ok) {
+                this.getFilmActors(movieId); 
+            } else {
+                console.error('Failed to update actor:', await response.json());
+            }
+        } catch (error) {
+            console.error('Error updating actor:', error);
+        }
+    },
+      async getFilmDetails(id) {
+        try {
+          const res = await axios.get(`http://localhost:8080/movies/${id}`)
+          this.selectedFilm = res.data
+          const modal = this.getOrCreateModal('filmDetailsModal')
+          modal && modal.show()
+        } catch (err) {
+          console.error('Error fetching film details:', err)
+        }
+      },
+      showAddActorModal(filmId) {
+        this.currentMovieId = filmId
+        this.newActorName = ''
+        const modal = this.getOrCreateModal('addActorModal')
+        modal && modal.show()
+      },
+
+      showEditActorModal(movieId, actor) {
+        this.currentMovieId = movieId;
+        this.editingActor = { ...actor }; 
+        const modal = this.getOrCreateModal('editActorModal');
+        if (modal) modal.show();
+    }
 
     }
   }
