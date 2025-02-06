@@ -80,7 +80,16 @@ app.put('/movies/:id', (req, res) => {
     res.json(movie);
 });
 
-
+// delete films by id
+app.delete('/movies/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const index = movies.findIndex(m => m.id === id);
+    if (index === -1) {
+        return res.status(404).json({ error: 'Movie not found' });
+    }
+    movies.splice(index, 1);
+    res.status(204).send();
+});
 
 app.get('/movies/:id/actors', (req, res) => {
     const id = parseInt(req.params.id);
