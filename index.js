@@ -91,6 +91,12 @@ app.delete('/movies/:id', (req, res) => {
     res.status(204).send();
 });
 
+// get all actors
+app.get('/movies/:id/actors', (req, res) => {
+    const id = parseInt(req.params.id);
+    const movieActors = actors[id] || [];
+    res.json(movieActors);
+});
 
 app.post('/movies/:id/actors', (req, res) => {
     const id = parseInt(req.params.id);
