@@ -32,12 +32,7 @@
                 >
                   Actors
                 </button>
-                <button
-                  class="btn btn-success btn-sm"
-                  @click="showAddActorModal(film.id)"
-                >
-                  Add Actor
-                </button>
+
                 <button
                   class="btn btn-warning btn-sm"
                   @click="showEditFilmModal(film)"
@@ -121,30 +116,7 @@
         </div>
       </div>
   
-      <div class="modal fade" id="addActorModal" tabindex="-1">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Add Actor</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-              <input
-                type="text"
-                class="form-control mb-2"
-                v-model="newActorName"
-                placeholder="Actor Name"
-              />
-              <button
-                class="btn btn-primary w-100"
-                @click="addActor(currentMovieId, newActorName)"
-              >
-                Add Actor
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      
   
       <div class="modal fade" id="filmDetailsModal" tabindex="-1">
         <div class="modal-dialog">
@@ -260,18 +232,7 @@
           console.error('Error fetching film actors:', err)
         }
       },
-      async addActor(movieId, actorName) {
-        if (!actorName) return
-        try {
-          await axios.post(`http://localhost:8080/movies/${movieId}/actors`, { name: actorName })
-          this.getFilmActors(movieId)
-          this.newActorName = ''
-          const modal = this.getOrCreateModal('addActorModal')
-          modal && modal.hide()
-        } catch (err) {
-          console.error('Error adding actor:', err)
-        }
-      },
+      
       async deleteActor(movieId, actorId) {
         try {
           await axios.delete(`http://localhost:8080/movies/${movieId}/actors/${actorId}`)
@@ -290,12 +251,7 @@
           console.error('Error fetching film details:', err)
         }
       },
-      showAddActorModal(filmId) {
-        this.currentMovieId = filmId
-        this.newActorName = ''
-        const modal = this.getOrCreateModal('addActorModal')
-        modal && modal.show()
-      }
+      
     }
   }
   </script>
