@@ -52,6 +52,12 @@
                 </button>
               </div>
             </td>
+        <li v-for="actor in selectedFilmActors" :key="actor.id">
+    {{ actor.name }}
+    <button class="btn btn-warning btn-sm" @click="showEditActorModal(currentMovieId, actor)">Edit</button>
+    <button class="btn btn-danger btn-sm" @click="deleteActor(currentMovieId, actor.id)">Delete</button>
+        </li>
+
           </tr>
         </tbody>
       </table>
@@ -92,6 +98,23 @@
           </div>
         </div>
       </div>
+
+      <div class="modal fade" id="editActorModal" tabindex="-1" aria-labelledby="editActorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Actor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" v-model="editingActor.name" class="form-control" placeholder="Actor Name" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @click="updateActor(currentMovieId, editingActor.id, editingActor.name)">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
   
       <div class="modal fade" id="filmActorsModal" tabindex="-1">
         <div class="modal-dialog">
@@ -280,6 +303,24 @@
           console.error('Error deleting actor:', err)
         }
       },
+
+      async updateActor(movieId, actorId, newName) {
+        try {
+            const response = await fetch(`http://localhost:8080/movies/${movieId}/actors/${actorId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: newName })
+            });
+
+            if (response.ok) {
+                this.getFilmActors(movieId); 
+            } else {
+                console.error('Failed to update actor:', await response.json());
+            }
+        } catch (error) {
+            console.error('Error updating actor:', error);
+        }
+    },
       async getFilmDetails(id) {
         try {
           const res = await axios.get(`http://localhost:8080/movies/${id}`)
@@ -295,7 +336,15 @@
         this.newActorName = ''
         const modal = this.getOrCreateModal('addActorModal')
         modal && modal.show()
-      }
+      },
+
+      showEditActorModal(movieId, actor) {
+        this.currentMovieId = movieId;
+        this.editingActor = { ...actor }; 
+        const modal = this.getOrCreateModal('editActorModal');
+        if (modal) modal.show();
+    }
+
     }
   }
   </script>
