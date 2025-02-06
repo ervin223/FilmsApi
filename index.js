@@ -98,28 +98,8 @@ app.get('/movies/:id/actors', (req, res) => {
     res.json(movieActors);
 });
 
-app.post('/movies/:id/actors', (req, res) => {
-    const id = parseInt(req.params.id);
-    const { name } = req.body;
 
-    if (!name) {
-        return res.status(400).json({ error: 'Actor name is required' });
-    }
 
-    if (!actors[id]) {
-        return res.status(404).json({ error: 'Movie not found' });
-    }
-
-    const newActor = {
-        id: actors[id].length ? actors[id][actors[id].length - 1].id + 1 : 1,
-        name
-    };
-
-    actors[id].push(newActor);
-    res.status(201).json(newActor);
-});
-
-// Удаление актера из фильма
 app.delete('/movies/:movieId/actors/:actorId', (req, res) => {
     const movieId = parseInt(req.params.movieId);
     const actorId = parseInt(req.params.actorId);
