@@ -98,6 +98,23 @@ app.get('/movies/:id/actors', (req, res) => {
     res.json(movieActors);
 });
 
+// get actor by id
+app.get('/movies/:id/actors/:actorId', (req, res) => {
+    const movieId = parseInt(req.params.id);
+    const actorId = parseInt(req.params.actorId);
+
+    if (!actors[movieId]) {
+        return res.status(404).json({ error: 'Movie not found' });
+    }
+
+    const actor = actors[movieId].find(a => a.id === actorId);
+    if (!actor) {
+        return res.status(404).json({ error: 'Actor not found' });
+    }
+
+    res.json(actor);
+});
+
 //add new actor
 app.post('/movies/:id/actors', (req, res) => {
     const id = parseInt(req.params.id);
