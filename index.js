@@ -38,15 +38,7 @@ app.get('/movies', (req, res) => {
     res.json(movies);
 });
 
-app.get('/movies/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    const movie = movies.find(m => m.id === id);
-    if (movie) {
-        res.json(movie);
-    } else {
-        res.status(404).json({ error: 'Movie not found' });
-    }
-});
+
 
 app.post('/movies', (req, res) => {
     const { name, price } = req.body;
