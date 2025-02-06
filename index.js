@@ -33,9 +33,6 @@ let actors = {
     3: [{ id: 5, name: 'Matthew McConaughey' }, { id: 6, name: 'Anne Hathaway' }]
 };
 
-app.get('/movies', (req, res) => {
-    res.json(movies);
-});
 
 app.get('/movies/:id', (req, res) => {
     const id = parseInt(req.params.id);
