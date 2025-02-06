@@ -91,16 +91,7 @@ app.delete('/movies/:id', (req, res) => {
     res.status(204).send();
 });
 
-app.get('/movies/:id/actors', (req, res) => {
-    const id = parseInt(req.params.id);
-    const movieActors = actors[id];
-    if (!movieActors) {
-        return res.status(404).json({ error: 'Actors not found for this movie' });
-    }
-    res.json(movieActors);
-});
 
-// Добавление актера к фильму
 app.post('/movies/:id/actors', (req, res) => {
     const id = parseInt(req.params.id);
     const { name } = req.body;
