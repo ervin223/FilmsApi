@@ -120,7 +120,24 @@ app.post('/movies/:id/actors', (req, res) => {
     res.status(201).json(newActor);
 });
 
+//delete actors by id
+app.delete('/movies/:movieId/actors/:actorId', (req, res) => {
+    const movieId = parseInt(req.params.movieId);
+    const actorId = parseInt(req.params.actorId);
 
+    if (!actors[movieId]) {
+        return res.status(404).json({ error: 'Movie not found' });
+    }
+
+    const actorIndex = actors[movieId].findIndex(actor => actor.id === actorId);
+
+    if (actorIndex === -1) {
+        return res.status(404).json({ error: 'Actor not found' });
+    }
+
+    actors[movieId].splice(actorIndex, 1);
+    res.status(204).send();
+});
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
