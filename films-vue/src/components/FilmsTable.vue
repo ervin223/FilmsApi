@@ -26,12 +26,7 @@
             <td>{{ film.price ? film.price.toFixed(2) : 'N/A' }} $</td>
             <td>
               <div class="btn-group">
-                <button
-                  class="btn btn-info btn-sm"
-                  @click="getFilmActors(film.id)"
-                >
-                  Actors
-                </button>
+   
                 <button
                   class="btn btn-success btn-sm"
                   @click="showAddActorModal(film.id)"
@@ -93,33 +88,7 @@
         </div>
       </div>
   
-      <div class="modal fade" id="filmActorsModal" tabindex="-1">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Actors</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-              <ul class="list-group">
-                <li
-                  class="list-group-item d-flex justify-content-between align-items-center"
-                  v-for="actor in selectedFilmActors"
-                  :key="actor.id"
-                >
-                  {{ actor.name }}
-                  <button
-                    class="btn btn-danger btn-sm"
-                    @click="deleteActor(currentMovieId, actor.id)"
-                  >
-                    x
-                  </button>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
+      
   
       <div class="modal fade" id="addActorModal" tabindex="-1">
         <div class="modal-dialog">
@@ -187,7 +156,6 @@
         selectedFilm: {},
         selectedFilmActors: [],
         currentMovieId: null,
-        newActorName: '',
         filmForm: { id: null, name: '', price: 0 },
         isEditing: false
       }
@@ -196,16 +164,7 @@
       this.fetchMovies()
     },
     methods: {
-      getOrCreateModal(id) {
-        const el = document.getElementById(id)
-        if (!el) return null
-  
-        let modal = Modal.getInstance(el)
-        if (!modal) {
-          modal = new Modal(el, { backdrop: 'static' })
-        }
-        return modal
-      },
+
   
       async fetchMovies() {
         try {
@@ -249,17 +208,7 @@
           console.error('Error deleting film:', err)
         }
       },
-      async getFilmActors(filmId) {
-        try {
-          const res = await axios.get(`http://localhost:8080/movies/${filmId}/actors`)
-          this.selectedFilmActors = res.data
-          this.currentMovieId = filmId
-          const modal = this.getOrCreateModal('filmActorsModal')
-          modal && modal.show()
-        } catch (err) {
-          console.error('Error fetching film actors:', err)
-        }
-      },
+
       async addActor(movieId, actorName) {
         if (!actorName) return
         try {
