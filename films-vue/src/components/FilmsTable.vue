@@ -39,6 +39,12 @@
                   Add Actor
                 </button>
                 <button
+                  class="btn btn-warning btn-sm"
+                  @click="showEditFilmModal(film)"
+                >
+                  Edit
+                </button>
+                <button
                   class="btn btn-danger btn-sm"
                   @click="deleteFilm(film.id)"
                 >
@@ -212,6 +218,12 @@
       showAddFilmModal() {
         this.filmForm = { id: null, name: '', price: 0 }
         this.isEditing = false
+        const modal = this.getOrCreateModal('filmModal')
+        modal && modal.show()
+      },
+      showEditFilmModal(film) {
+        this.filmForm = { ...film }
+        this.isEditing = true
         const modal = this.getOrCreateModal('filmModal')
         modal && modal.show()
       },
